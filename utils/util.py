@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use('agg')
 import seaborn as sns
 from matplotlib import pyplot as plt
-from sklearn.utils.optimize import linear_assignment
+from scipy.optimize import linear_sum_assignment as linear_assignment
 import random
 import os
 import argparse
