@@ -122,7 +122,7 @@ def train_IL(model, train_loader, labeled_eval_loader, unlabeled_eval_loader, ar
         args.head='head2'
         test(model, unlabeled_eval_loader, args)
 
-def test(model, test_loader, args, tsne=False):
+def test(model, test_loader, args, tsne=False, tsneplotName = ''):
     model.eval()
     preds=np.array([])
     targets=np.array([])
@@ -151,8 +151,8 @@ def test(model, test_loader, args, tsne=False):
 
         plt.figure(figsize=(8, 6))
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
-        plt.title("t-SNE Visualization of Learned Features on Unlabelled CIFAR-10 Subset")
-        plt.savefig(args.model_dir+'/tsne.png')
+        plt.title("t-SNE Visualization of Learned Features on " + tsneplotName + " CIFAR-10 Subset")
+        plt.savefig(args.model_dir+ '/' + tsneplotName + '.png')
 
 if __name__ == "__main__":
     import argparse
@@ -245,7 +245,7 @@ if __name__ == "__main__":
     print('Evaluating on Head1')
     args.head = 'head1'
     print('test on labeled classes (test split)')
-    test(model, labeled_eval_loader, args)
+    test(model, labeled_eval_loader, args, tsne=True, tsneplotName='Labeled')
     if args.IL:
         print('test on unlabeled classes (test split)')
         test(model, unlabeled_eval_loader_test, args)
@@ -254,6 +254,6 @@ if __name__ == "__main__":
     print('Evaluating on Head2')
     args.head = 'head2'
     print('test on unlabeled classes (train split)')
-    test(model, unlabeled_eval_loader, args)
+    test(model, unlabeled_eval_loader, args, tsne=True, tsneplotName='UnLabeled')
     print('test on unlabeled classes (test split)')
-    test(model, unlabeled_eval_loader_test, args, tsne=True)
+    test(model, unlabeled_eval_loader_test, args, tsne=True, tsneplotName='UnLabeled_test')
