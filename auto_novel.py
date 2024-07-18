@@ -122,10 +122,11 @@ def train_IL(model, train_loader, labeled_eval_loader, unlabeled_eval_loader, ar
         args.head='head2'
         test(model, unlabeled_eval_loader, args)
 
-def test(model, test_loader, args):
+def test(model, test_loader, args, tsne=False):
     model.eval()
     preds=np.array([])
     targets=np.array([])
+    outputs = []
     for batch_idx, (x, label, _) in enumerate(tqdm(test_loader)):
         x, label = x.to(device), label.to(device)
         output1, output2, _ = model(x)
@@ -136,8 +137,22 @@ def test(model, test_loader, args):
         _, pred = output.max(1)
         targets=np.append(targets, label.cpu().numpy())
         preds=np.append(preds, pred.cpu().numpy())
+        if tsne:
+            outputs.append(output.detach().cpu().numpy())
     acc, nmi, ari = cluster_acc(targets.astype(int), preds.astype(int)), nmi_score(targets, preds), ari_score(targets, preds) 
     print('Test acc {:.4f}, nmi {:.4f}, ari {:.4f}'.format(acc, nmi, ari))
+    if tsne:
+        from sklearn.manifold import TSNE
+        import matplotlib.pyplot as plt
+        # print('plotting t-SNE ...') 
+        # tsne plot
+         # Create t-SNE visualization
+        X_embedded = TSNE(n_components=2).fit_transform(outputs)  # Use meaningful features for t-SNE
+
+        plt.figure(figsize=(8, 6))
+        plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
+        plt.title("t-SNE Visualization of Learned Features on Unlabelled CIFAR-10 Subset")
+        plt.savefig(args.model_dir+'/tsne.png')
 
 if __name__ == "__main__":
     import argparse
@@ -241,4 +256,4 @@ if __name__ == "__main__":
     print('test on unlabeled classes (train split)')
     test(model, unlabeled_eval_loader, args)
     print('test on unlabeled classes (test split)')
-    test(model, unlabeled_eval_loader_test, args)
+    test(model, unlabeled_eval_loader_test, args, tsne=True)
