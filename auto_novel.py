@@ -152,7 +152,7 @@ def test(model, test_loader, args, tsne=False, tsneplotName = ''):
         plt.figure(figsize=(8, 6))
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
         plt.title("t-SNE Visualization of Learned Features on " + tsneplotName + " CIFAR-10 Subset")
-        plt.savefig(args.model_dir+ '/' + tsneplotName + '.png')
+        plt.savefig(args.model_dir_images+ '/' + tsneplotName + '.png')
 
 if __name__ == "__main__":
     import argparse
@@ -188,6 +188,7 @@ if __name__ == "__main__":
     model_dir= os.path.join(args.exp_root, runner_name)
     if not os.path.exists(model_dir):
         os.makedirs(model_dir)
+    args.model_dir_images = model_dir
     args.model_dir = model_dir+'/'+'{}.pth'.format(args.model_name) 
 
     model = ResNet(BasicBlock, [2,2,2,2], args.num_labeled_classes, args.num_unlabeled_classes).to(device)
