@@ -147,7 +147,7 @@ def test(model, test_loader, args, tsne=False, tsneplotName = ''):
         # print('plotting t-SNE ...') 
         # tsne plot
          # Create t-SNE visualization
-        X_embedded = TSNE(n_components=2).fit_transform(outputs)  # Use meaningful features for t-SNE
+        X_embedded = TSNE(n_components=2).fit_transform(np.array(outputs))  # Use meaningful features for t-SNE
 
         plt.figure(figsize=(8, 6))
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
