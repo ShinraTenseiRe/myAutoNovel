@@ -103,7 +103,7 @@ def main():
     parser.add_argument('--num_workers', type=int, default=4, help='number of data loading workers')
     parser.add_argument('--seed', type=int, default=1,
                                     help='random seed (default: 1)')
-    parser.add_argument('--epochs', type=int, default=200, metavar='N',
+    parser.add_argument('--epochs', type=int, default=50, metavar='N',
                         help='number of epochs to train (default: 200)')
     parser.add_argument('--lr', type=float, default=0.1, metavar='LR',
                         help='learning rate (default: 0.1)')

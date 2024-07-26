@@ -163,7 +163,7 @@ if __name__ == "__main__":
     parser.add_argument('--gamma', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=1e-4)
-    parser.add_argument('--epochs', default=200, type=int) # 200
+    parser.add_argument('--epochs', default=50, type=int) # 200
     parser.add_argument('--rampup_length', default=150, type=int)
     parser.add_argument('--rampup_coefficient', type=float, default=50)
     parser.add_argument('--increment_coefficient', type=float, default=0.05)
