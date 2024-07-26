@@ -126,8 +126,9 @@ def test(model, test_loader, args, tsne=False, tsneplotName = ''):
     model.eval()
     preds=np.array([])
     targets=np.array([])
-    outputs = []
-    for batch_idx, (x, label, _) in enumerate(tqdm(test_loader)):
+    outputs = np.zeros((len(test_loader.dataset), 
+                      args.num_labeled_classes if args.head == 'head1' else args.num_unlabeled_classes)) 
+    for batch_idx, (x, label, idx) in enumerate(tqdm(test_loader)):
         x, label = x.to(device), label.to(device)
         output1, output2, _ = model(x)
         if args.head=='head1':
@@ -137,8 +138,7 @@ def test(model, test_loader, args, tsne=False, tsneplotName = ''):
         _, pred = output.max(1)
         targets=np.append(targets, label.cpu().numpy())
         preds=np.append(preds, pred.cpu().numpy())
-        if tsne:
-            outputs.append(output.detach().cpu().numpy())
+        outputs[idx, :] = output.cpu().detach().numpy()
     acc, nmi, ari = cluster_acc(targets.astype(int), preds.astype(int)), nmi_score(targets, preds), ari_score(targets, preds) 
     print('Test acc {:.4f}, nmi {:.4f}, ari {:.4f}'.format(acc, nmi, ari))
     if tsne:
@@ -147,7 +147,7 @@ def test(model, test_loader, args, tsne=False, tsneplotName = ''):
         # print('plotting t-SNE ...') 
         # tsne plot
          # Create t-SNE visualization
-        X_embedded = TSNE(n_components=2).fit_transform(np.array(outputs))  # Use meaningful features for t-SNE
+        X_embedded = TSNE(n_components=2).fit_transform(outputs)  # Use meaningful features for t-SNE
 
         plt.figure(figsize=(8, 6))
         plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=targets, cmap='viridis')
